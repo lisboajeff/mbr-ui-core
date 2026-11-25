@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Button } from "./Primitives.js";
 
 export function ConfirmDialog({
@@ -19,6 +20,17 @@ export function ConfirmDialog({
   onConfirm: () => void;
   onCancel: () => void;
 }) {
+  useEffect(() => {
+    if (!open || isPending) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onCancel();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, isPending, onCancel]);
+
   if (!open) return null;
 
   return (
